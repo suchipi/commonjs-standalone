@@ -184,6 +184,18 @@ wrapperFunction(
 );
 ```
 
+## Supported features
+
+- `module`
+  - `module.id`
+  - `module.exports`
+- `require`
+  - `require.resolve`
+  - `require.cache` and deleting from `require.cache`
+- `exports`
+- `__filename`
+- `__dirname`
+
 ## License
 
 MIT
