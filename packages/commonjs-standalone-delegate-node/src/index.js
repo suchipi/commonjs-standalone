@@ -22,7 +22,7 @@ module.exports = ({
   read(filepath: ResolvedPath): Code {
     return fs.readFileSync(filepath, "utf-8");
   },
-  run(code: Code, moduleEnv: ModuleEnvironment): void {
+  run(code: Code, moduleEnv: ModuleEnvironment, filepath: ResolvedPath): void {
     const wrapper = vm.runInThisContext(
       [
         "(function (exports, require, module, __filename, __dirname) { ",
@@ -30,7 +30,7 @@ module.exports = ({
         "\n})"
       ].join(""),
       {
-        filename: moduleEnv.module.id
+        filename: filepath
       }
     );
     wrapper(

@@ -18,7 +18,7 @@ export type ModuleEnvironment = {
 export type Delegate = {
   resolve(id: UnresolvedPath, fromFilePath: ResolvedPath): ResolvedPath,
   read(filepath: ResolvedPath): Code,
-  run(code: Code, moduleEnv: ModuleEnvironment): void
+  run(code: Code, moduleEnv: ModuleEnvironment, filepath: ResolvedPath): void
 };
 
 // From the node `path` module
@@ -58,10 +58,6 @@ class Module {
     this._cache = cache;
   }
 
-  static _debug(msg: any) {
-    // console.warn(msg);
-  }
-
   static _load(
     filepath: ResolvedPath,
     delegate: Delegate,
@@ -69,7 +65,7 @@ class Module {
   ): Exports {
     const module = new Module(filepath, delegate, cache);
     const code = delegate.read(filepath);
-    delegate.run(code, module.env());
+    delegate.run(code, module.env(), filepath);
 
     cache[filepath] = module;
 
