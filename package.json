@@ -1,0 +1,25 @@
+{
+  "name": "commonjs-standalone-monorepo",
+  "private": true,
+  "workspaces": [
+    "packages/commonjs-standalone",
+    "packages/commonjs-standalone-delegate-node"
+  ],
+  "devDependencies": {
+    "@babel/cli": "^7.1.2",
+    "@babel/core": "^7.1.2",
+    "@babel/plugin-proposal-class-properties": "^7.1.0",
+    "@babel/plugin-transform-flow-strip-types": "^7.0.0",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.7.0",
+    "eslint-config-unobtrusive": "^1.2.2",
+    "eslint-plugin-flowtype": "^3.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "flow-bin": "^0.83.0",
+    "prettier": "^1.14.3",
+    "shelljs": "^0.8.2"
+  },
+  "scripts": {
+    "build": "node scripts/build.js"
+  }
+}
