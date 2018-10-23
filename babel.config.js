@@ -1,6 +1,7 @@
 module.exports = {
-  "plugins": [
+  plugins: [
     "@babel/plugin-transform-flow-strip-types",
-    "@babel/plugin-proposal-class-properties"
+    "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-transform-modules-commonjs"
   ]
-}
+};

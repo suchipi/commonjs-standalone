@@ -9,9 +9,36 @@ import type {
 
 const fs = require("fs");
 const path = require("path");
+const vm = require("vm");
+const resolve = require("resolve");
 
-export default ({
-  resolve(id: UnresolvedPath, fromFilePath: ResolvedPath): ResolvedPath {},
-  read(filepath: ResolvedPath): Code {},
-  compile(code: Code, moduleEnv: ModuleEnvironment): void {}
+module.exports = ({
+  resolve(id: UnresolvedPath, fromFilePath: ResolvedPath): ResolvedPath {
+    return resolve.sync(id, {
+      basedir: path.dirname(fromFilePath),
+      preserveSymlinks: false
+    });
+  },
+  read(filepath: ResolvedPath): Code {
+    return fs.readFileSync(filepath, "utf-8");
+  },
+  run(code: Code, moduleEnv: ModuleEnvironment): void {
+    const wrapper = vm.runInThisContext(
+      [
+        "(function (exports, require, module, __filename, __dirname) { ",
+        code,
+        "\n})"
+      ].join(""),
+      {
+        filename: moduleEnv.module.id
+      }
+    );
+    wrapper(
+      moduleEnv.exports,
+      moduleEnv.require,
+      moduleEnv.module,
+      moduleEnv.__filename,
+      moduleEnv.__dirname
+    );
+  }
 }: Delegate);

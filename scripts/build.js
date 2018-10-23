@@ -3,13 +3,8 @@ const path = require("path");
 const { mkdir, rm, exec } = require("shelljs");
 const packageJson = require("../package.json");
 
-const babelPath = path.resolve(
-  __dirname,
-  "..",
-  "node_modules",
-  ".bin",
-  "babel"
-);
+const binPath = binName =>
+  path.resolve(__dirname, "..", "node_modules", ".bin", binName);
 
 packageJson.workspaces.forEach(workspace => {
   console.log(`\n--- Building ${workspace} ---\n`);
@@ -20,5 +15,6 @@ packageJson.workspaces.forEach(workspace => {
   mkdir("-p", distPath);
   rm("-rf", path.join(distPath, "*"));
 
-  exec(`${babelPath} ${srcPath} --out-dir ${distPath}`);
+  exec(`${binPath("babel")} ${srcPath} --out-dir ${distPath}`);
+  exec(`${binPath("flow-copy-source")} -v ${srcPath} ${distPath}`);
 });

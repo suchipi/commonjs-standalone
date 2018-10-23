@@ -18,7 +18,7 @@ export type ModuleEnvironment = {
 export type Delegate = {
   resolve(id: UnresolvedPath, fromFilePath: ResolvedPath): ResolvedPath,
   read(filepath: ResolvedPath): Code,
-  compile(code: Code, moduleEnv: ModuleEnvironment): void
+  run(code: Code, moduleEnv: ModuleEnvironment): void
 };
 
 // From the node `path` module
@@ -58,16 +58,31 @@ class Module {
     this._cache = cache;
   }
 
+  static _debug(msg: any) {
+    // console.warn(msg);
+  }
+
+  static _load(
+    filepath: ResolvedPath,
+    delegate: Delegate,
+    cache: ModuleCache
+  ): Exports {
+    const module = new Module(filepath, delegate, cache);
+    const code = delegate.read(filepath);
+    delegate.run(code, module.env());
+
+    cache[filepath] = module;
+
+    return module.exports;
+  }
+
   require(unresolvedPath: UnresolvedPath): Exports {
     const resolvedPath = this._delegate.resolve(unresolvedPath, this.id);
     if (this._cache[resolvedPath]) {
       return this._cache[resolvedPath].exports;
     }
 
-    const child = new Module(resolvedPath, this._delegate, this._cache);
-    const code = this._delegate.read(resolvedPath);
-    this._delegate.compile(code, child.env());
-    return child.exports;
+    return Module._load(resolvedPath, this._delegate, this._cache);
   }
 
   _makeRequireFunction(): RequireFunction {
@@ -94,9 +109,6 @@ class Module {
 
 export type { Module };
 
-export default function requireMain(
-  filepath: ResolvedPath,
-  delegate: Delegate
-): ModuleEnvironment {
-  return new Module(filepath, delegate, {}).env();
+export function requireMain(filepath: ResolvedPath, delegate: Delegate) {
+  Module._load(filepath, delegate, {});
 }
