@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 const path = require("path");
 const { mkdir, rm, exec } = require("shelljs");
+const Case = require("case");
 const packageJson = require("../package.json");
 
 const binPath = binName =>
@@ -17,4 +18,11 @@ packageJson.workspaces.forEach(workspace => {
 
   exec(`${binPath("babel")} ${srcPath} --out-dir ${distPath}`);
   exec(`${binPath("flow-copy-source")} -v ${srcPath} ${distPath}`);
+
+  const umdBundleName = Case.camel(workspace.replace(/^packages\//, ""));
+  exec(
+    `${binPath(
+      "rollup"
+    )} -c rollup.config.js ${distPath}/index.js --file ${distPath}/umd.js --format umd --name ${umdBundleName}`
+  );
 });
