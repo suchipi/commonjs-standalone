@@ -29,6 +29,7 @@
     "shelljs": "^0.8.2"
   },
   "scripts": {
-    "build": "node scripts/build.js"
+    "build": "node scripts/build.js",
+    "test": "yarn build && cd packages/commonjs-standalone-tests && yarn jest"
   }
 }
