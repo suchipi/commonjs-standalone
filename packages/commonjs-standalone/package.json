@@ -5,5 +5,12 @@
   "main": "dist/index.js",
   "repository": "https://github.com/suchipi/commonjs-standalone",
   "author": "Suchipi <me@suchipi.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "keywords": [
+    "loader",
+    "commonjs",
+    "cjs",
+    "module",
+    "require"
+  ]
 }

@@ -8,5 +8,13 @@
   "license": "MIT",
   "dependencies": {
     "resolve": "^1.8.1"
-  }
+  },
+  "keywords": [
+    "loader",
+    "commonjs",
+    "cjs",
+    "module",
+    "require",
+    "commonjs-standalone-delegate"
+  ]
 }
