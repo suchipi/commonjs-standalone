@@ -46,7 +46,7 @@ function dirname(path: string): string {
   return path.slice(0, end);
 }
 
-class Module {
+export class Module {
   id: ResolvedPath;
   exports: Exports = {};
   _delegate: Delegate;
@@ -84,7 +84,7 @@ class Module {
   _makeRequireFunction(): RequireFunction {
     const require = this.require.bind(this);
     require.resolve = (unresolvedPath: UnresolvedPath) => {
-      this._delegate.resolve(unresolvedPath, this.id);
+      return this._delegate.resolve(unresolvedPath, this.id);
     };
     require.cache = this._cache;
 
@@ -102,8 +102,6 @@ class Module {
     };
   }
 }
-
-export type { Module };
 
 export function requireMain(filepath: ResolvedPath, delegate: Delegate) {
   Module._load(filepath, delegate, {});

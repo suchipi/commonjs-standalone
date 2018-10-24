@@ -1,0 +1,13 @@
+{
+  "name": "commonjs-standalone-tests",
+  "version": "0.0.1",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "commonjs-standalone": "0.1.0",
+    "jest": "^23.6.0"
+  },
+  "scripts": {
+    "repl": "node repl.js"
+  }
+}

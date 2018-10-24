@@ -3,7 +3,8 @@
   "private": true,
   "workspaces": [
     "packages/commonjs-standalone",
-    "packages/commonjs-standalone-delegate-node"
+    "packages/commonjs-standalone-delegate-node",
+    "packages/commonjs-standalone-tests"
   ],
   "devDependencies": {
     "@babel/cli": "^7.1.2",
