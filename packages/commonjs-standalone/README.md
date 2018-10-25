@@ -195,6 +195,7 @@ wrapperFunction(
 - `exports`
 - `__filename`
 - `__dirname`
+- Circular dependencies
 
 ## License
 
