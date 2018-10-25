@@ -200,4 +200,37 @@ describe("commonjs-standalone", () => {
     }).toThrowError();
     expect(logOutput).toEqual(["before"]);
   });
+
+  test("circular dependencies work", () => {
+    modules["one"] = `
+      exports.before = "before";
+      require("two");
+      exports.after = "after";
+    `;
+    modules["two"] = `
+      log(Object.assign({}, require("one")));
+    `;
+
+    requireMain("one", delegate);
+    expect(logOutput).toEqual([{ before: "before" }]);
+  });
+
+  test("modules that error are not cached", () => {
+    modules["one"] = `
+      try {
+        require("two");
+      } catch (err) {
+        try {
+          require("two");
+        } catch (err2) {}
+      }
+    `;
+    modules["two"] = `
+      log("in two");
+      throw new Error("bad");
+    `;
+
+    requireMain("one", delegate);
+    expect(logOutput).toEqual(["in two", "in two"]);
+  });
 });

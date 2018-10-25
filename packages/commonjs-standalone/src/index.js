@@ -64,12 +64,16 @@ export class Module {
     cache: ModuleCache
   ): Exports {
     const module = new Module(filepath, delegate, cache);
-    const code = delegate.read(filepath);
-    delegate.run(code, module.env(), filepath);
-
     cache[filepath] = module;
 
-    return module.exports;
+    try {
+      const code = delegate.read(filepath);
+      delegate.run(code, module.env(), filepath);
+      return module.exports;
+    } catch (err) {
+      delete cache[filepath];
+      throw err;
+    }
   }
 
   require(unresolvedPath: UnresolvedPath): Exports {
