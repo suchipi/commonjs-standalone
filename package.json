@@ -7,29 +7,18 @@
     "packages/commonjs-standalone-tests"
   ],
   "devDependencies": {
-    "@babel/cli": "^7.1.2",
-    "@babel/core": "^7.1.2",
-    "@babel/plugin-proposal-class-properties": "^7.1.0",
-    "@babel/plugin-transform-flow-strip-types": "^7.0.0",
-    "@babel/plugin-transform-modules-commonjs": "^7.1.0",
-    "babel-eslint": "^10.0.1",
     "builtin-modules": "^3.0.0",
     "case": "^1.5.5",
-    "eslint": "^5.7.0",
-    "eslint-config-unobtrusive": "^1.2.2",
-    "eslint-plugin-flowtype": "^3.0.0",
-    "eslint-plugin-import": "^2.14.0",
-    "flow-bin": "^0.83.0",
-    "flow-copy-source": "^2.0.2",
-    "prettier": "^1.14.3",
+    "prettier": "^2.6.2",
     "rollup": "^0.66.6",
     "rollup-plugin-commonjs": "^9.2.0",
     "rollup-plugin-json": "^3.1.0",
     "rollup-plugin-node-resolve": "^3.4.0",
-    "shelljs": "^0.8.2"
+    "shelljs": "^0.8.2",
+    "typescript": "^4.6.3"
   },
   "scripts": {
     "build": "node scripts/build.js",
-    "test": "yarn build && cd packages/commonjs-standalone-tests && yarn jest"
+    "test": "npm run build && cd packages/commonjs-standalone-tests && npx jest"
   }
 }

@@ -1,8 +1,7 @@
-// @flow
 export type UnresolvedPath = string;
 export type ResolvedPath = string;
 export type Code = string;
-export type Exports = Object;
+export type Exports = any;
 export type ModuleCache = { [id: ResolvedPath]: Module };
 export type RequireFunction = ((id: UnresolvedPath) => Exports) & {
   resolve: (id: UnresolvedPath) => ResolvedPath,
@@ -86,13 +85,14 @@ export class Module {
   }
 
   _makeRequireFunction(): RequireFunction {
-    const require = this.require.bind(this);
+    // @ts-ignore not assignable to RequireFunction
+    const require: RequireFunction = this.require.bind(this);
+
     require.resolve = (unresolvedPath: UnresolvedPath) => {
       return this._delegate.resolve(unresolvedPath, this.id);
     };
     require.cache = this._cache;
 
-    // $FlowFixMe
     return require;
   }
 
@@ -107,6 +107,6 @@ export class Module {
   }
 }
 
-export function requireMain(filepath: ResolvedPath, delegate: Delegate) {
-  Module._load(filepath, delegate, {});
+export function requireMain(filepath: ResolvedPath, delegate: Delegate): any {
+  return Module._load(filepath, delegate, {});
 }

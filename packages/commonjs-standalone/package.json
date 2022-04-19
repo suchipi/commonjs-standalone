@@ -3,6 +3,8 @@
   "version": "0.1.2",
   "description": "Standalone CommonJS loader for any JS engine",
   "main": "dist/index.js",
+  "types": "src/index.ts",
+  "browser": "dist/umd.js",
   "repository": "https://github.com/suchipi/commonjs-standalone",
   "author": "Suchipi <me@suchipi.com>",
   "license": "MIT",

@@ -1,8 +1,0 @@
-{
-  "extends": ["unobtrusive", "unobtrusive/import", "unobtrusive/flowtype"],
-  "env": {
-    "es6": true,
-    "node": true,
-    "jest": true
-  }
-}

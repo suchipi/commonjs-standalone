@@ -1,11 +1,11 @@
-const { requireMain } = require("commonjs-standalone");
+const { requireMain } = require("../commonjs-standalone");
 
 describe("commonjs-standalone", () => {
   let delegate;
   let modules;
   let logOutput;
 
-  const log = msg => {
+  const log = (msg) => {
     logOutput.push(msg);
   };
 
@@ -19,7 +19,7 @@ describe("commonjs-standalone", () => {
           throw new Error(`Could not resolve ${id} from ${fromFilePath}`);
         }
       }),
-      read: jest.fn(filepath => {
+      read: jest.fn((filepath) => {
         return modules[filepath];
       }),
       run: jest.fn((code, moduleEnv, filepath) => {
@@ -35,7 +35,7 @@ describe("commonjs-standalone", () => {
           moduleEnv.__filename,
           moduleEnv.__dirname
         );
-      })
+      }),
     };
     modules = {};
   });
@@ -97,7 +97,7 @@ describe("commonjs-standalone", () => {
         require: expect.any(Function),
         module: expect.any(Object),
         __filename: expect.any(String),
-        __dirname: expect.any(String)
+        __dirname: expect.any(String),
       }),
       "two-resolved"
     );

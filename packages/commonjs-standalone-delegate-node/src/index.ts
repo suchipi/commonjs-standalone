@@ -1,22 +1,21 @@
-// @flow
 import type {
   Delegate,
   UnresolvedPath,
   ResolvedPath,
   Code,
-  ModuleEnvironment
+  ModuleEnvironment,
 } from "commonjs-standalone";
 
-const fs = require("fs");
-const path = require("path");
-const vm = require("vm");
-const resolve = require("resolve");
+import fs from "fs";
+import path from "path";
+import vm from "vm";
+import resolve from "resolve";
 
-module.exports = ({
+const delegate: Delegate = {
   resolve(id: UnresolvedPath, fromFilePath: ResolvedPath): ResolvedPath {
     return resolve.sync(id, {
       basedir: path.dirname(fromFilePath),
-      preserveSymlinks: false
+      preserveSymlinks: false,
     });
   },
   read(filepath: ResolvedPath): Code {
@@ -27,10 +26,10 @@ module.exports = ({
       [
         "(function (exports, require, module, __filename, __dirname) { ",
         code,
-        "\n})"
+        "\n})",
       ].join(""),
       {
-        filename: filepath
+        filename: filepath,
       }
     );
     wrapper(
@@ -40,5 +39,7 @@ module.exports = ({
       moduleEnv.__filename,
       moduleEnv.__dirname
     );
-  }
-}: Delegate);
+  },
+};
+
+module.exports = delegate;
