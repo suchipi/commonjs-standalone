@@ -1,45 +1,78 @@
-import type {
-  Delegate,
-  UnresolvedPath,
-  ResolvedPath,
-  Code,
-  ModuleEnvironment,
-} from "commonjs-standalone";
+import type { Delegate } from "commonjs-standalone";
 
 import fs from "fs";
-import path from "path";
 import vm from "vm";
-import resolve from "resolve";
+import {Module} from "module";
 
-const delegate: Delegate = {
-  resolve(id: UnresolvedPath, fromFilePath: ResolvedPath): ResolvedPath {
-    return resolve.sync(id, {
-      basedir: path.dirname(fromFilePath),
-      preserveSymlinks: false,
-    });
-  },
-  read(filepath: ResolvedPath): Code {
-    return fs.readFileSync(filepath, "utf-8");
-  },
-  run(code: Code, moduleEnv: ModuleEnvironment, filepath: ResolvedPath): void {
-    const wrapper = vm.runInThisContext(
-      [
-        "(function (exports, require, module, __filename, __dirname) { ",
-        code,
-        "\n})",
-      ].join(""),
-      {
-        filename: filepath,
+const fakeParent = { filename: "", id: "" };
+const builtinModules = new Set(Module.builtinModules);
+
+function makeDelegate(context?: vm.Context): Delegate {
+  const delegate: Delegate = {
+    resolve(id, fromFilePath) {
+      if (builtinModules.has(id)) {
+        return "builtin:" + id;
       }
-    );
-    wrapper(
-      moduleEnv.exports,
-      moduleEnv.require,
-      moduleEnv.module,
-      moduleEnv.__filename,
-      moduleEnv.__dirname
-    );
-  },
-};
 
-module.exports = delegate;
+      fakeParent.filename = fromFilePath;
+      fakeParent.id = fromFilePath;
+
+      // @ts-ignore _resolveFilename does not exist
+      return Module._resolveFilename(id, fakeParent, false);
+    },
+
+    read(filepath) {
+      if (filepath.startsWith("builtin:") || filepath.endsWith(".node")) {
+        return "";
+      }
+
+      let code = fs.readFileSync(filepath, "utf-8");
+
+      if (code.charCodeAt(0) === 0xfeff) {
+        code = code.slice(1);
+      }
+
+      if (filepath.endsWith(".json")) {
+        return "module.exports = " + code;
+      }
+
+      return code.replace(/^#![^\n]+\n/, "\n");
+    },
+
+    run(code, moduleEnv, filepath) {
+      if (filepath.startsWith("builtin:")) {
+        moduleEnv.exports = require(filepath.replace(/^builtin:/, ""));
+        moduleEnv.module.exports = moduleEnv.exports;
+        return;
+      }
+
+      if (filepath.endsWith(".node")) {
+        moduleEnv.exports = require(filepath);
+        moduleEnv.module.exports = moduleEnv.exports;
+      }
+
+      let wrapper;
+      if (context == null) {
+        wrapper = vm.runInThisContext(Module.wrap(code), { filename: filepath });
+      } else {
+        wrapper = vm.runInContext(Module.wrap(code), context, { filename: filepath });
+      }
+      wrapper(
+        moduleEnv.exports,
+        moduleEnv.require,
+        moduleEnv.module,
+        moduleEnv.__filename,
+        moduleEnv.__dirname
+      );
+    },
+  };
+
+  return delegate;
+}
+
+const delegate = makeDelegate();
+
+module.exports = {
+  makeDelegate,
+  delegate,
+};
