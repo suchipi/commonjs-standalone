@@ -4,9 +4,10 @@
   "license": "MIT",
   "private": true,
   "devDependencies": {
-    "jest": "^23.6.0"
+    "vitest": "^3.2.4"
   },
   "scripts": {
+    "test": "vitest",
     "repl": "node repl.js"
   }
 }

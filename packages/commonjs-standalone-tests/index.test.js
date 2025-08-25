@@ -1,4 +1,5 @@
-const { requireMain } = require("../commonjs-standalone");
+import { describe, beforeEach, test, expect, vi } from "vitest";
+import { requireMain } from "../commonjs-standalone";
 
 describe("commonjs-standalone", () => {
   let delegate;
@@ -12,17 +13,17 @@ describe("commonjs-standalone", () => {
   beforeEach(() => {
     logOutput = [];
     delegate = {
-      resolve: jest.fn((id, fromFilePath) => {
+      resolve: vi.fn((id, fromFilePath) => {
         if (modules[id] != null) {
           return id;
         } else {
           throw new Error(`Could not resolve ${id} from ${fromFilePath}`);
         }
       }),
-      read: jest.fn((filepath) => {
+      read: vi.fn((filepath) => {
         return modules[filepath];
       }),
-      run: jest.fn((code, moduleEnv, filepath) => {
+      run: vi.fn((code, moduleEnv, filepath) => {
         const wrapper = eval(
           "(function (exports, require, module, __filename, __dirname) { " +
             code +
@@ -84,7 +85,7 @@ describe("commonjs-standalone", () => {
       log("hi from two");
     `;
 
-    delegate.resolve = jest.fn(() => "two-resolved");
+    delegate.resolve = vi.fn(() => "two-resolved");
 
     requireMain("one", delegate);
 

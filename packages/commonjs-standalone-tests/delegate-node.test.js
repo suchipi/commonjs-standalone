@@ -1,11 +1,8 @@
-const vm = require("vm");
-const pathLessTraveled = require("path-less-traveled");
-
-const { requireMain } = require("../commonjs-standalone");
-const {
-  delegate,
-  makeDelegate,
-} = require("../commonjs-standalone-delegate-node");
+import { describe, test, expect } from "vitest";
+import vm from "vm";
+import pathLessTraveled from "path-less-traveled";
+import { requireMain } from "../commonjs-standalone";
+import { delegate, makeDelegate } from "../commonjs-standalone-delegate-node";
 
 const fixturesDir = pathLessTraveled.pathMarker(__dirname + "/fixtures");
 

@@ -14,5 +14,8 @@
     "module",
     "require",
     "commonjs-standalone-delegate"
-  ]
+  ],
+  "devDependencies": {
+    "@types/node": "^24.3.0"
+  }
 }
